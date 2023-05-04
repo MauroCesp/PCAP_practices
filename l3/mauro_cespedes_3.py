@@ -6,9 +6,10 @@ class Client:
         self.clients = dict()
         
         
-    def check_if_exists(self,dni):
-        
-        try:
+    def check_if_client(self,dni):
+        # Realmente no hace falta comprobar si es None ya que nunca va a ser None ya que lo creas en el constructor, por lo que esa comprobación no es necesaria y tenerla consume recursos
+        ''' 
+          try:
             # --------------- x -----------------
             if self.clients == None:      
                 return None
@@ -22,7 +23,11 @@ class Client:
                 pass
                
         except Exception as e:
-            print ('Ha surgido un error:'+e)
+            print ('Ha surgido un error:'+e)      
+            
+        '''
+        # La búsqueda en los diccionario es más óptima si la realizas por clave que en un bucle iterando, por lo que tu método quedaría:
+        return self.clients.get(dni)
         
    
     def new_cust(self,name,purchase,dni):
@@ -53,7 +58,7 @@ class Client:
             
             
     def add_points(self,purchase):     
-        
+        ''' 
         points = list()
         
         counter = int(purchase)
@@ -71,7 +76,10 @@ class Client:
         # Hago la sumatoria de la lista de puntos acumulados por la compra
         suma_puntos = sum(points)
                  
-        return suma_puntos
+        return suma_puntos      
+        
+        '''       
+        return int(purchase // 6 * 5)
       
         
     def save_new_cust(self, new_client,dni):    
@@ -83,16 +91,9 @@ class Client:
                     
     def update_acct(self, points, dni, purchase):
         
-        for key , value in self.clients.items():
-            
-            if key == dni:
-                for k , v in value.items():
-                    
-                    if k == 'Compras':
-                        v.append(purchase)
-                        
-                    if k == 'Puntos':
-                        v.append(points)
+        client = self.clients[dni]
+        client['Compras'].append(purchase)
+        client['Puntos'].append(points)
                     
                     
     def clean(self, dni,compras,name):
@@ -121,19 +122,15 @@ try:
         dni = input('Introduzca el DNI del cliente: ')
         
         # Verfico si lo que introdujo el ususario es un numero
-        if dni.isdigit():
-            # Verifico si el numero que ingreso es un 0
-             if int(dni) == 0:          
-                break 
-             else:
-                 continue  
+        if dni == '0':
+            break
         
         else:
             
             # Utilizo la funcion check para ver si el cliente esta registrado
-            exists = client.check_if_exists(dni)
+            id = client.check_if_client(dni)
                 
-            if exists == None:
+            if id == None:
                 
                 name = input('Nombre del cliente: ')
                 total = input('Total de compra: ')
@@ -173,8 +170,8 @@ try:
                 
                 print('-'*10)
             
-            # Exists contiene el objeto del ususario encontrado 
-            elif exists:
+            # client contiene el objeto del ususario encontrado 
+            elif id:
                 
                 total = input('Total de compra: ')
                                     
@@ -182,29 +179,6 @@ try:
                 
                 # Actualiza los campos de cada diccionario 
                 client.update_acct(points, dni, total)
-                
-                
-                sum_points = 0
-                dni1= ''
-                compras = list()
-                    
-                # Recorro el diccionario con clave -valor para tener acceso a todo          
-                for key, value in exists.items():                            
-                    # Busco la llave que deseo trabajar.
-                    if key == 'Puntos':                    
-                        sum_points = sum(value)
-                        
-                    if key== 'DNI':
-                        dni1 = str(value)
-                        
-                    if key == 'Nombre':
-                        name = str(value)
-                    
-                    if key == 'Compras':
-                        compras = str(value)
-                        
-                # Utilizo una fucnion para limpiar el resultado de los caracters de más
-                primero, segundo, tercero = client.clean(dni1, compras, name)    
             
 
                 print(' EL cliente {} ({}) tiene acumulados {} puntos.'.format(tercero, primero, sum_points))   

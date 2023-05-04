@@ -3,143 +3,85 @@
 class Lista:
     
     def __init__(self):
-              
+        # Inicializo las listas que voy a utilizar en el ejercicio para poder llamarlas desde todos los metodos
         self.list = list()
+        self.elementos = list()
         
-    def get_userinfo():
-        my_str= input('Introduzca una linea con los números separados por espacios: ')
-        return my_str
-
-    #@functools.lru_cache(maxsize = None)           
     def new_list(self):
 
         try:
             
-            my_str= Lista.get_userinfo()
+            the_input = input('Introduzca una línea con los números separados por espacios: ')
+            self.elementos = the_input.split()
             
             # Utilizo la funcion split para dividir la lista
-            # Por defecto es el espacio pero se le puede definir el delimitador como parametro
-            my_list = my_str.split()
-            
-            new_lista = list()
-            
-            
-            # TEngo que identificar si viene la palabra STOP en cualquiera de sus variables 
-            for i in my_list:
-                
-                # Aqui verifico si esta compuesto de solo letras o si vienen numeros
-                # Me da TRUE si solo contine letras
-                # Si es el caso analizamos si vienen la palabra STOP con cualquie r variante
-                if i.isalpha():
-                    my_list.clear()
-                    print('Vuelta ',i)
-                    
-                    resp = Lista.check_stop(i)
-                    
-                    print('Esta es la respuesta de la funcion check_stop'+ str(resp))
+            # Por defecto el separador es el espacio, pero se le puede definir el delimitador como parametro
+            # SI no se puede pasar a float salta un value error y analizo si es la palabra stop
+            self.list = [float(i) for i in self.elementos]
 
-                    # SI la palabra coincide con alguna de las combinaciones
-                    if str(resp) == 'True':  
-                             
-                        print(' Resultado de verificar si la cadena está entre las opciones: TRUE')                                        
-                        return new_lista  
-                    else:
-                        print(' Ingreso una cadena invalida. Intente nuevamente')   
-                        
-                        Lista.new_list(self)
-                          
-                        break
-
-                    break
-      
-                else:
-                    new_lista.append(i)
+            print('La suma total es de: ', self.sum())
             
-            print('Esta es la lista nueva dentro de New_list',new_lista)
-            
-            # new_lista = [i if i.isalpha()[if Lista.check_stop(i) == True] else i for i in my_list]
+            print('La lista ordenada es :', self.ordenar())
 
-            return new_lista
         
-        except Exception as e:
-            print ('Ha surgido un error:'+e)     
+        # INtenté aqui comenzar a jugar con la excepciones para filtrar
+        except ValueError:
+            # Aqui verifico si esta compuesto de solo letras o si vienen numeros
+            # Me da TRUE si solo contine letras
+            # Si es el caso analizamos si viene la palabra STOP con cualquier variante
+            #COn cada elemento pruebo si está la palabra STOP en cualquiera de sus variantes
             
-    def check_stop(cadena):
-        
-        
-        print('Esta es la cadena que recibo en el check_stop')
-        print(cadena)
-        
-        
-        
-        word = 'stop'
-        
-        dict_options = list()
-        
-        for i in range (len(word)):
+            my_list = self.check_stop()
             
-            x = word.replace(word[i:], word[i:].upper())
-            dict_options.append(x) 
-
-        for j in range (len(word)):
+            self.list = my_list
+            print('La suma total es de: ', self.sum())
+            print('La lista ordenada es :', self.ordenar())
             
-            x1 = word.replace(word[:j], word[:j].upper())
-
-            dict_options.append(x1) 
-        
-        
-        print(dict_options)
-        
-        # Ahora verifco si la cadena esta en la lista que acbo de generar.
-        if cadena in dict_options:                         
-            return True               
-        else:
-            return False
-
-    def sum(new_lista):
+    def check_stop(self):
         
         try:
-            int_list = [int(i) for i in new_lista]    
-    
-            suma = sum(int_list)
+            # Creo una lista nueva para almacenar solo los datos antes de la palabra stop
+            new_list = list()
             
-            return suma
+            for item in self.elementos:
+                
+                # Simplemente pasamos todo a minuscula y comparamos.
+                if item.lower() == "stop":
+                    break
+                # Lo agrago en float solo para asegurarme que puedo utiliar la lista par asumar y ordenar.
+                new_list.append(float(item))
+
+            return new_list
         
-        except Exception as e:    
-            print(e)
-        
-    def ordenar(new_lista):
-        
-        print(new_lista)
+        # En caso que se haya introducido un valor que no es el stop se le solicita la informacion de nuevo al usuario.
+        # Jugamos con la exception para comenzar de nuevo
+        except ValueError:
+            print("Ha introducido un caracter no valido. Por favor intente de nuevo")
+            Lista.new_list()
+
+    def sum(self):
+        # Utilizo el metodo sum para realizar la suma
+        suma = sum(self.list)
+        return suma
+            
+    def ordenar(self):
+    
+        # Utilizo el metodo sorted para ordenar los valores de mayor a menor
+        ordenar = sorted(self.list, reverse=True)
+        return ordenar
 
 try:
    
    
     # Creo el objeto con la clase Client
     lista = Lista() 
-    
-    
 
+    # Hago un loop para que el programa se ejecute sin interrupcion
     while True:
-        lista_nueva = lista.new_list()
-
-        try:
-            print('*'*10)
-            print('Lista nueva final: ', lista_nueva)
-            #suma = lista.sum(lista_nueva)
-            
-            #ordenada = lista.ordenar(lista_nueva)
-            
-            #print('La suma total es: {}'.format(suma))
-            
-            #print('La lista ordenada es: {}'.format(ordenada))
-
-        except Exception as e:
-            
-            print('Alguno de los caracteres ingresados no son números')
-            print('Por vafor ingrese la lista nuevamente')
-            continue
-                  
+        
+        # Inicializo el objeto y llamo al metodo new_list
+        # Toda la ejecucion se realiza dentro de la clase.
+        lista.new_list()
 
 except Exception as e:
     print('El siguiente error a surigido',e)

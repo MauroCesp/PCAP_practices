@@ -96,16 +96,3 @@ print(myList)
 # En la segunda vuelta 2 > 1 , guarda lso resultados en una segunda lista.
 # Como el resultado es TRUE guarda el valor de la posicion de i (0,1,2,3)
 
-print(ord('z')-ord('y'))
-
-
-
-
-for i in range(-1,4):
-    
-    print('---'*10)
-    print(i)
-    
-mi = [i*5 if i > -1 else 0 for i in range(-1,4)]
-    
-print('MADRID'> 'madrid')
